@@ -2,12 +2,19 @@
 
 import React from "react";
 import Logo from "./Logo";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
+import Spinner from "@/components/Spinner";
+import { useConvexAuth } from "convex/react";
+import { Button } from "@/components/ui/button";
 import useScrollTop from "@/hooks/useScrollTop";
 import { ModeToggle } from "@/components/ModeToggle";
+import { SignInButton, UserButton } from "@clerk/clerk-react";
 
 const Navbar = () => {
   const scrolled = useScrollTop();
+
+  const { isAuthenticated, isLoading } = useConvexAuth();
 
   return (
     <div
@@ -19,7 +26,31 @@ const Navbar = () => {
       <Logo />
 
       <div className="w-full flex items-center justify-between md:justify-end md:ml-auto gap-2">
-        <div>login</div>
+        {isLoading && <Spinner />}
+
+        {!isAuthenticated && !isLoading && (
+          <>
+            <SignInButton mode="modal">
+              <Button variant="ghost" size="sm">
+                Log in
+              </Button>
+            </SignInButton>
+
+            <SignInButton mode="modal">
+              <Button size="sm">Get Jotion free</Button>
+            </SignInButton>
+          </>
+        )}
+
+        {isAuthenticated && !isLoading && (
+          <>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/documents">Enter Jotion</Link>
+            </Button>
+
+            <UserButton afterSignOutUrl="/" />
+          </>
+        )}
 
         <ModeToggle />
       </div>
