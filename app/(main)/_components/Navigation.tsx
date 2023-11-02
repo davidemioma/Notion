@@ -2,6 +2,7 @@
 
 import React, { ElementRef, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import UserItem from "./UserItem";
 import { useMediaQuery } from "usehooks-ts";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import {
@@ -148,7 +149,9 @@ const Navigation = () => {
           <ChevronsLeft className="h-6 w-6" />
         </div>
 
-        <div>Action items</div>
+        <div>
+          <UserItem />
+        </div>
 
         <div className="mt-4">documents</div>
 
