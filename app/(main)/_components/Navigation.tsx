@@ -6,10 +6,12 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import TrashBox from "./TrashBox";
 import UserItem from "./UserItem";
+import useSearch from "@/hooks/useSearch";
 import DocumentList from "./DocumentList";
 import { useMediaQuery } from "usehooks-ts";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import useSettings from "@/hooks/useSettings";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import {
   Popover,
@@ -32,6 +34,10 @@ const Navigation = () => {
   const params = useParams();
 
   const pathname = usePathname();
+
+  const settings = useSettings();
+
+  const searchModal = useSearch();
 
   const isResizingRef = useRef(false);
 
@@ -177,9 +183,18 @@ const Navigation = () => {
         <div>
           <UserItem />
 
-          <Item label="Search" Icon={Search} isSearch onClick={() => {}} />
+          <Item
+            label="Search"
+            Icon={Search}
+            isSearch
+            onClick={() => searchModal.onOpen()}
+          />
 
-          <Item label="Settings" Icon={Settings} onClick={() => {}} />
+          <Item
+            label="Settings"
+            Icon={Settings}
+            onClick={() => settings.onOpen()}
+          />
 
           <Item label="New page" Icon={PlusCircle} onClick={onCreateHandler} />
         </div>
