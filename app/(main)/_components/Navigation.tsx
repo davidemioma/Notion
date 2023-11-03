@@ -1,10 +1,21 @@
 "use client";
 
 import React, { ElementRef, useEffect, useRef, useState } from "react";
+import { Item } from "./Item";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import TrashBox from "./TrashBox";
 import UserItem from "./UserItem";
+import DocumentList from "./DocumentList";
 import { useMediaQuery } from "usehooks-ts";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { useParams, usePathname, useRouter } from "next/navigation";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   ChevronsLeft,
   MenuIcon,
@@ -33,6 +44,20 @@ const Navigation = () => {
   const [isResetting, setIsResetting] = useState(false);
 
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
+
+  const createDocument = useMutation(api.documents.createDocument);
+
+  const onCreateHandler = () => {
+    const promise = createDocument({ title: "Untitled" }).then((id) =>
+      router.push(`/documents/${id}`)
+    );
+
+    toast.promise(promise, {
+      loading: "Creating a new note...",
+      success: "New note created!",
+      error: "Failed to create a new note.",
+    });
+  };
 
   const handleMouseMove = (e: MouseEvent) => {
     if (!isResizingRef.current) return;
@@ -151,9 +176,32 @@ const Navigation = () => {
 
         <div>
           <UserItem />
+
+          <Item label="Search" Icon={Search} isSearch onClick={() => {}} />
+
+          <Item label="Settings" Icon={Settings} onClick={() => {}} />
+
+          <Item label="New page" Icon={PlusCircle} onClick={onCreateHandler} />
         </div>
 
-        <div className="mt-4">documents</div>
+        <div className="mt-4">
+          <DocumentList />
+
+          <Item label="Add a page" Icon={Plus} onClick={onCreateHandler} />
+
+          <Popover>
+            <PopoverTrigger className="w-full">
+              <Item label="Trash" Icon={Trash} />
+            </PopoverTrigger>
+
+            <PopoverContent
+              className="p-0 w-72"
+              side={isMobile ? "bottom" : "right"}
+            >
+              <TrashBox />
+            </PopoverContent>
+          </Popover>
+        </div>
 
         <div
           className="absolute right-0 top-0 bg-primary/10 w-1 h-full opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize"
