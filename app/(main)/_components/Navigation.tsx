@@ -2,14 +2,15 @@
 
 import React, { ElementRef, useEffect, useRef, useState } from "react";
 import { Item } from "./Item";
+import Navbar from "./Navbar";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import TrashBox from "./TrashBox";
 import UserItem from "./UserItem";
 import useSearch from "@/hooks/useSearch";
 import DocumentList from "./DocumentList";
-import { useMediaQuery } from "usehooks-ts";
 import { useMutation } from "convex/react";
+import { useMediaQuery } from "usehooks-ts";
 import { api } from "@/convex/_generated/api";
 import useSettings from "@/hooks/useSettings";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -233,15 +234,19 @@ const Navigation = () => {
           isMobile && "left-0 w-full"
         )}
       >
-        <nav className="bg-transparent w-full px-3 py-2 ">
-          {isCollapsed && (
-            <MenuIcon
-              role="button"
-              className="h-6 w-6 text-muted-foreground"
-              onClick={resetWidth}
-            />
-          )}
-        </nav>
+        {!!params.id ? (
+          <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+        ) : (
+          <nav className="bg-transparent w-full px-3 py-2 ">
+            {isCollapsed && (
+              <MenuIcon
+                role="button"
+                className="h-6 w-6 text-muted-foreground"
+                onClick={resetWidth}
+              />
+            )}
+          </nav>
+        )}
       </div>
     </>
   );
