@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import IconPicker from "./IconPicker";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import useCoverImage from "@/hooks/useCoverImage";
 import { ImageIcon, Smile, X } from "lucide-react";
 import { Doc } from "@/convex/_generated/dataModel";
 import TextareaAutosize from "react-textarea-autosize";
@@ -15,6 +16,8 @@ interface Props {
 }
 
 const Toolbar = ({ initialData, preview }: Props) => {
+  const coverImage = useCoverImage();
+
   const [isEditing, setIsEditing] = useState(false);
 
   const inputRef = useRef<ElementRef<"textarea">>(null);
@@ -112,7 +115,7 @@ const Toolbar = ({ initialData, preview }: Props) => {
 
         {!initialData.coverImage && !preview && (
           <Button
-            onClick={() => {}}
+            onClick={() => coverImage.onOpen()}
             className="text-muted-foreground text-xs"
             variant="outline"
             size="sm"
