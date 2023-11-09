@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo } from "react";
+import dynamic from "next/dynamic";
 import { Cover } from "@/components/Cover";
 import Toolbar from "@/components/Toolbar";
 import { api } from "@/convex/_generated/api";
@@ -16,9 +18,25 @@ export default function DocumentPage({
 
   const document = useQuery(api.documents.getDocumentById, { id });
 
+  const updateDocument = useMutation(api.documents.updateDocument);
+
+  const Editor = useMemo(
+    () => dynamic(() => import("@/components/Editor"), { ssr: false }),
+    []
+  );
+
+  const onChange = (content: string) => {
+    updateDocument({
+      id,
+      content,
+    });
+  };
+
   if (document === undefined) {
     return (
       <div>
+        <Cover.Skeleton />
+
         <div className="md:max-w-3xl lg:max-w-4xl mx-auto mt-10">
           <div className="space-y-4 pl-8 pt-4">
             <Skeleton className="h-14 w-[50%]" />
@@ -44,6 +62,8 @@ export default function DocumentPage({
 
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
         <Toolbar initialData={document} />
+
+        <Editor initialContent={document.content} onChange={onChange} />
       </div>
     </div>
   );
